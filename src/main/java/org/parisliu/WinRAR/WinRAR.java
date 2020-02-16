@@ -15,6 +15,10 @@ public class WinRAR {
 		return output;
 	}
 	
+	public boolean hasRAR() {
+		return new File(folder.getAbsolutePath() + File.separator + "Rar.exe").exists();
+	}
+	
 	public String getRAR() {
 		String output = folder.getAbsolutePath() + File.separator;
 		if(output.contains(" ")) {

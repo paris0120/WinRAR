@@ -9,18 +9,29 @@ public class RAROptions {
 	private File output = null;
 	boolean recurses=true;
 	boolean  deleteAfter = false;
+	boolean  withPath = false;
 	String comment = null;
 	int m = 5;//compression ratio
 	public RAROptions(WinRAR rar) {
 		this.rar = rar;
 	}
 
-	public void run() throws IOException {
-		Runtime.getRuntime().exec(rar.getRAR() + getOptions()); 
-		System.out.print(rar.getRAR() + getOptions());
+	public void run() throws IOException, InterruptedException {
+		Process p = Runtime.getRuntime().exec(rar.getRAR() + getOptions()); 
+		System.out.println(rar.getRAR() + getOptions());
+		p.waitFor();
 	}
 	
 	
+	public boolean isWithPath() {
+		return withPath;
+	}
+
+	public RAROptions setWithPath(boolean withPath) {
+		this.withPath = withPath;
+		return this;
+	}
+
 	public boolean isDeleteAfter() {
 		return deleteAfter;
 	}
@@ -44,15 +55,19 @@ public class RAROptions {
 		if(output!=null) {
 			String name = output.getAbsolutePath();
 			if(name.contains(" ")) {
-				name = "\"" + name + "\"";
+				name = "\"" + name + ".rar\"";
 			}
-			options+=" " + name;
+			options+=" " + name + ".rar";
 		}
 		else {
 			return null;
 		}
 		if(recurses) {
 			options += " -r";
+		}
+		
+		if(!withPath) {
+			options += " -ep";
 		}
 		if(deleteAfter) {
 			options += " -df";
